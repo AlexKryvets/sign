@@ -5,7 +5,6 @@ const ENV = process.env.npm_lifecycle_event;
 const isDev = ENV === 'build:dev';
 const isProd = ENV === 'build:prod';
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 var config = {
@@ -13,6 +12,7 @@ var config = {
     output: {
         filename: 'sign.js',
         path: path.resolve(__dirname, 'dist'),
+        library: "sign"
     },
     resolve: {
         extensions: ['.ts', '.js', '.html']

@@ -8,7 +8,7 @@
   },
   "author": "Alexey Kryvets",
   "scripts": {
-    "build:dev": "npm run clear:dist && webpack --progress --profile --watch",
+    "build:dev": "npm run clear:dist && webpack --progress --profile",
     "build:prod": "npm run clear:dist && webpack --progress --profile --bail",
     "clear:dist": "rimraf -- dist",
     "watch:dev": "npm run build:dev -- --watch",

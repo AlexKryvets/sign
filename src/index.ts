@@ -48,7 +48,7 @@ export class Sign {
 
     private handleStart (event: any) {
         this.previousPoint = this.currentPoint;
-        this.currentPoint = [event.clientX - this.canvas.offsetLeft, event.clientY - this.canvas.offsetTop];
+        this.currentPoint = this.getPoint(event);
 
         this.flag = this.dotFlag = true;
 
@@ -67,9 +67,16 @@ export class Sign {
     private handleMove (event: any) {
         if (this.flag) {
             this.previousPoint = this.currentPoint;
-            this.currentPoint = [event.clientX - this.canvas.offsetLeft, event.clientY - this.canvas.offsetTop];
+            this.currentPoint = this.getPoint(event);
             this.drawLine(this.previousPoint, this.currentPoint);
         }
+    }
+
+    private getPoint(event: any): Point {
+        var touch = event.touches && event.touches[0];
+        var clientX = touch && touch.clientX || event.clientX;
+        var clientY = touch && touch.clientY || event.clientY;
+        return [clientX - this.canvas.offsetLeft, clientY - this.canvas.offsetTop];
     }
 }
 

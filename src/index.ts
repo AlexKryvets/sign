@@ -26,6 +26,13 @@ export class Sign {
         this.canvas.addEventListener("touchcancel", this.handleEnd.bind(this), false);
     }
 
+    public isEmpty(): boolean {
+        var blankCanvas = document.createElement('canvas');
+        blankCanvas.width = this.canvas.width;
+        blankCanvas.height = this.canvas.height;
+        return blankCanvas.toDataURL() == this.canvas.toDataURL();
+    }
+
     public erase(): void {
         this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
@@ -38,15 +45,24 @@ export class Sign {
         return this.canvas.toDataURL().replace(/data:image\/.*;base64,/, '');
     }
 
-    private drawLine(point1: Point, coordinates2: Point): void {
+    private drawImage(base64: string): void {
+        var image = new Image();
+        image.onload = () => {
+            this.canvasContext.drawImage(image, 0, 0);
+        };
+        image.src = 'data:image/png;base64,' + base64;
+    }
+
+    private drawLine(point1: Point, point2: Point): void {
         this.canvasContext.beginPath();
         this.canvasContext.moveTo.apply(this.canvasContext, point1);
-        this.canvasContext.lineTo.apply(this.canvasContext, coordinates2);
+        this.canvasContext.lineTo.apply(this.canvasContext, point2);
         this.canvasContext.stroke();
         this.canvasContext.closePath();
     }
 
     private handleStart (event: any) {
+        event.preventDefault();
         this.previousPoint = this.currentPoint;
         this.currentPoint = this.getPoint(event);
 
@@ -61,10 +77,12 @@ export class Sign {
     }
 
     private handleEnd (event: any) {
+        event.preventDefault();
         this.flag = false;
     }
 
     private handleMove (event: any) {
+        event.preventDefault();
         if (this.flag) {
             this.previousPoint = this.currentPoint;
             this.currentPoint = this.getPoint(event);
@@ -76,7 +94,10 @@ export class Sign {
         var touch = event.touches && event.touches[0];
         var clientX = touch && touch.clientX || event.clientX;
         var clientY = touch && touch.clientY || event.clientY;
-        return [clientX - this.canvas.offsetLeft, clientY - this.canvas.offsetTop];
+        return [
+            clientX - this.canvas.offsetLeft + Math.round(window.scrollX),
+            clientY - this.canvas.offsetTop + Math.round(window.scrollY)
+        ]
     }
 }
 
